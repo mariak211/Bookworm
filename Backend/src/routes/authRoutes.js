@@ -3,14 +3,11 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
 
-
 const router = express.Router()
-
 
 const genenerateToken = (userId) => {
     return jwt.sign({userId},process.env.JWT_SECRET, {expiresIn: "1d"});
 }
-
 
 router.post("/register", async (req, res) => {
     // create a new user here
@@ -28,7 +25,6 @@ router.post("/register", async (req, res) => {
             });
 
         }
-
 
         if (username.length < 3 ) {
             return res.status(400).json({
@@ -59,11 +55,9 @@ router.post("/register", async (req, res) => {
             password,
             profileImage,
         })
-
         await user.save();
 
         // generate token and send it to client
-
         const token = genenerateToken(user._id);
         res.status(201).json({
             token,
@@ -72,9 +66,7 @@ router.post("/register", async (req, res) => {
                 username: user.username,
                 email: user.email,
                 profileImage: user.profileImage
-
             },
-
         });
 
     } catch(error) {
@@ -83,21 +75,17 @@ router.post("/register", async (req, res) => {
             message:"Internal Server error"
         });
     }
-   
 });
 
 router.post("/login", async (req, res) => {
     try {
-
         const {email, password} = req.body;
         if (!email || !password) return res.status(400).json({message: "All fields are required"});
-
 
         const user = await User.findOne({email});
 
         if (!user) return res.status(400).json({message: "Invalid credentials"});
 
-        
         const isMatchingPassword = await user.compparePassword(password);
 
         if (!isMatchingPassword) return res.status(400).json({message: "Invalid credentials"})
@@ -112,9 +100,7 @@ router.post("/login", async (req, res) => {
                 username: user.username,
                 email: user.email,
                 profileImage: user.profileImage
-
             },
-
         });
     } catch (error) {
 
